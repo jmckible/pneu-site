@@ -1,27 +1,367 @@
-/* pneu's colours (brand/README.md in the pneu repo): the page is paper with
-   ink on it, and the stamp is the red. In the dark the paper becomes ink and
-   links take the petit bleu, since red reads poorly on ink. */
-:root { color-scheme: light dark; --bg: #e2d3ab; --fg: #221c1d; --muted: #4f4636; --rule: #c9b98f; --accent: #a8261f; }
-@media (prefers-color-scheme: dark) { :root { --bg: #2f2c2a; --fg: #e2d3ab; --muted: #b3a785; --rule: #43393a; --accent: #86aecb; } }
+/* pneu.mckible.com, the "desktop" study, round 2.
+   The page is an Omarchy desktop: the theme's wallpaper behind everything and
+   an Omarchy bar on top. The words sit on the desktop itself; pneu's
+   screenshot is a picture laid on it, and changes visibly with the theme.
+   The four colours are exactly what pneu's theme hook writes (--bg --fg
+   --accent --selection), plus the theme's red; every other tone is mixed
+   from them. desk.js swaps the four, and the registered properties glide. */
+
+@font-face { font-family: "JB"; src: url(fonts/jbmono.woff2) format("woff2"); font-weight: 100 800; font-display: swap; }
+@font-face { font-family: "Omarchy Logo"; src: url(fonts/omarchy-logo.woff2) format("woff2"); font-display: block; }
+@font-face { font-family: "Bar Icons"; src: url(fonts/bar-icons.woff2) format("woff2"); font-display: block; }
+@font-face { font-family: "pneu mark"; src: url(fonts/pneu-mark.woff2) format("woff2"); font-display: block; }
+
+@property --bg { syntax: "<color>"; inherits: true; initial-value: #1a1b26; }
+@property --fg { syntax: "<color>"; inherits: true; initial-value: #a9b1d6; }
+@property --accent { syntax: "<color>"; inherits: true; initial-value: #7aa2f7; }
+@property --selection { syntax: "<color>"; inherits: true; initial-value: #292e42; }
+@property --red { syntax: "<color>"; inherits: true; initial-value: #f7768e; }
+
+/* Tokyo Night, Omarchy's default, until desk.js says otherwise; Rose Pine on
+   a light system. */
+:root {
+  color-scheme: dark;
+  --bg: #1a1b26; --fg: #a9b1d6; --accent: #7aa2f7; --selection: #292e42; --red: #f7768e;
+  --out: clamp(12px, 3vw, 48px);
+  --barh: 30px;
+}
+/* The derived tones, wherever a theme's four colours are set: the page, and
+   the hero's next-theme copy during a wipe. */
+:root, .themed {
+  --muted: color-mix(in oklab, var(--fg) 70%, var(--bg));
+  --border: color-mix(in oklab, var(--fg) 14%, var(--bg));
+  --strong: light-dark(color-mix(in oklab, var(--fg) 70%, black), color-mix(in oklab, var(--fg) 60%, white));
+  --inactive: color-mix(in oklab, var(--fg) 22%, var(--bg));
+  --veil: color-mix(in oklab, var(--bg) 86%, transparent);
+}
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; --bg: #faf4ed; --fg: #575279; --accent: #56949f; --selection: #dfdad9; --red: #b4637a; }
+}
+:root[data-mode="dark"] { color-scheme: dark; }
+:root[data-mode="light"] { color-scheme: light; }
+
 * { box-sizing: border-box; }
-/* The ground is the omakase kit's paper: two translucent tiles over the
-   colour, so the same grain works on the dark ground. */
-body { margin: 0; background: url(tex/paper.webp) 0 0 / 420px, url(tex/mottle.webp) 0 0 / 1100px, var(--bg); color: var(--fg); font: 17px/1.6 Georgia, "Iowan Old Style", serif; }
-main { max-width: 38rem; margin: 0 auto; padding: 3rem 1rem 4rem; }
-.stamp { display: block; width: 15rem; max-width: 70%; height: auto; margin: 0 0 2.5rem -0.5rem; }
-.stamp.small { width: 10rem; }
-h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .25rem; }
-h1.name { margin-bottom: .75rem; }
-/* Only the postmark is printed: the inked stamp (baked, never a live filter)
-   is multiplied into the paper so its fibres show through. On the dark ground
-   the lighter-inked dark cut sits on top. Type stays crisp. */
-.stamp { mix-blend-mode: multiply; }
-@media (prefers-color-scheme: dark) { .stamp { mix-blend-mode: normal; } }
-h1.name img { display: block; width: 11rem; height: auto; }
-h2 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
-p, li { margin: 0 0 .75rem; }
-.lede { color: var(--muted); margin-bottom: 2rem; }
-a { color: var(--accent); }
-code { font: .9em ui-monospace, "SF Mono", Menlo, monospace; }
-nav { font-size: .9rem; border-top: 1px solid var(--rule); margin-top: 3rem; padding-top: 1rem; color: var(--muted); }
-nav a { margin-right: 1rem; }
+html { scroll-padding-top: calc(var(--barh) + 8px); }
+body {
+  margin: 0; overflow-x: clip;
+  background: var(--bg); color: var(--fg);
+  font: 15px/1.65 "JB", ui-monospace, monospace;
+  font-variant-ligatures: none;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+button { font: inherit; color: inherit; }
+kbd { font: 700 .95em "JB", monospace; color: var(--accent); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- the wallpaper ---------- */
+.wall { position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+.wall .layer { position: absolute; inset: 0; opacity: 0; }
+.wall .layer.on { opacity: 1; }
+.wall .layer.in { z-index: 1; opacity: 1; }
+.wall img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---------- the bar ---------- */
+.bar {
+  position: sticky; top: 0; z-index: 10; height: var(--barh);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 0 12px; background: var(--bg); color: var(--fg); font-size: 12.5px;
+}
+.bar-l, .bar-r { display: flex; align-items: center; min-width: 0; }
+.bar-r { justify-content: flex-end; gap: 15px; position: relative; }
+.logo { font: 15px/1 "Omarchy Logo"; margin-right: 14px; }
+.ws { display: flex; }
+.ws a { color: var(--muted); text-decoration: none; width: 22px; text-align: center; font-weight: 500; transition: color .3s; }
+.ws a.on { color: var(--accent); font-weight: 800; }
+.ws a:hover { color: var(--fg); }
+.clock { font-weight: 500; white-space: nowrap; }
+.ico { font: 14px/1 "Bar Icons"; }
+.pw { all: unset; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; color: var(--accent); padding: 4px 2px; }
+.pw-mark { font: 14px/1 "pneu mark"; }
+.pw-n { font-weight: 800; font-size: 11.5px; }
+.tip {
+  position: absolute; top: calc(100% + 6px); right: 70px; white-space: nowrap;
+  background: var(--bg); color: var(--fg); border: 1px solid var(--inactive);
+  padding: 5px 10px; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(-3px);
+  transition: opacity .2s, transform .2s;
+}
+.pw:hover + .tip, .pw:focus-visible + .tip { opacity: 1; transform: none; }
+
+/* ---------- windows ---------- */
+.win { background: var(--bg); color: var(--fg); border: 2px solid var(--inactive); }
+
+/* ---------- the hero ---------- */
+.hero { overflow-x: clip; position: relative; isolation: isolate; }
+.ground { position: relative; isolation: isolate; min-height: calc(100svh - var(--barh)); padding: var(--out); display: grid; color: var(--fg); }
+/* A veil of the theme's ground under the words, so they read on any
+   wallpaper; the picture sits clear of it. */
+.ground::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+/* The next theme's copy of the ground, laid over the live one during a
+   wipe: its own wallpaper behind it (desk.js places it to match the fixed
+   one), so every pixel is wholly the old theme's or the new one's. It never
+   takes a pointer or focus (inert); clicks fall through to the live ground. */
+.bar.next { position: absolute; inset: 0; pointer-events: none; }
+.ground.next { position: absolute; inset: 0; z-index: 2; pointer-events: none; background-repeat: no-repeat; }
+
+.name svg { display: block; width: 92px; height: auto; color: var(--strong); margin-bottom: 26px; }
+h1 {
+  font-size: clamp(32px, 3.4vw, 54px); line-height: 1.04; letter-spacing: -0.04em;
+  font-weight: 800; margin: 0 0 18px; color: var(--strong); text-wrap: balance;
+}
+.acc { color: var(--accent); }
+.sub { font-size: 16px; margin: 0; max-width: 32ch; color: var(--fg); }
+
+.prompt {
+  display: flex; align-items: flex-start; gap: 10px;
+  border: 1px solid var(--inactive); background: var(--bg);
+  padding: 11px 12px 11px 14px;
+}
+.prompt code { font: 13.5px/1.55 "JB", monospace; flex: 1; min-width: 0; overflow-wrap: break-word; color: var(--strong); }
+.ps { color: var(--accent); font-weight: 800; }
+.copy { flex: none; border: 0; cursor: pointer; padding: 3px 11px; font-size: 12.5px; font-weight: 700; background: var(--accent); color: var(--bg); }
+.copy:hover { filter: brightness(1.08); }
+.copy.done { background: var(--fg); }
+.note { color: var(--muted); font-size: 12.5px; margin: 10px 0 0; line-height: 1.6; max-width: 46ch; }
+
+/* The picture: a print of the app on a warm mat with a fine edge, so it
+   reads on a light wallpaper as well as a dark one, and a shadow under it. */
+.photo { margin: 0; min-width: 0; position: relative; }
+.print {
+  position: relative; padding: 9px;
+  background: #ece5d5;
+  box-shadow: 0 0 0 1px rgba(40, 30, 20, .22), 0 1px 2px rgba(0,0,0,.3), 0 28px 60px -18px rgba(0,0,0,.6);
+}
+.stack { position: relative; aspect-ratio: 1400 / 820; overflow: hidden; background: var(--bg); }
+.stack .layer { position: absolute; inset: 0; }
+.stack .layer:not(.on) { visibility: hidden; }
+.stack .layer.in { visibility: visible; z-index: 1; }
+.stack img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left top; }
+
+.cap {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 14px; padding: 5px 6px 5px 12px; font-size: 12.5px; color: var(--muted);
+  background: var(--veil); width: fit-content; max-width: 100%;
+}
+.sh { white-space: nowrap; overflow: hidden; min-width: 0; }
+.dollar { color: var(--accent); }
+.typed { color: var(--fg); }
+.caret { display: inline-block; width: .6em; height: 1.1em; vertical-align: -0.2em; background: var(--fg); margin-left: 1px; animation: blink 1.1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.ctl { display: flex; gap: 2px; flex: none; }
+.ctl button { background: none; border: 1px solid transparent; color: var(--muted); cursor: pointer; padding: 0 7px; line-height: 1.6; }
+.ctl button:hover { color: var(--accent); border-color: var(--border); }
+.ctl .pause[aria-pressed="true"] { color: var(--accent); }
+
+/* The words down the left on a veil of the theme's ground; the print laid at
+   an angle, running off the right edge; the prompt and its note along the
+   foot of the desk. A theme change sweeps across all of it, left to right. */
+@media (min-width: 981px) {
+  .ground {
+    grid-template-columns: minmax(330px, 27rem) minmax(0, 1fr);
+    grid-template-rows: 1fr auto 1fr auto; column-gap: clamp(28px, 4vw, 64px);
+  }
+  /* The veil fades out downwards as well as rightwards, so it has no lower
+     edge: the hero ends on clear wallpaper. */
+  .ground::before {
+    background: linear-gradient(90deg, color-mix(in oklab, var(--bg) 90%, transparent) 0, color-mix(in oklab, var(--bg) 72%, transparent) 30%, transparent 52%);
+    -webkit-mask-image: linear-gradient(180deg, #000 0, #000 55%, transparent 88%);
+    mask-image: linear-gradient(180deg, #000 0, #000 55%, transparent 88%);
+  }
+  .words { grid-column: 1; grid-row: 2; }
+  .photo { grid-column: 2; grid-row: 1 / 4; align-self: center; margin-right: calc(-1 * var(--out) - 7vw); }
+  .print { transform: rotate(-2deg); transform-origin: 30% 50%; }
+  .cap { margin-left: 3%; transform: rotate(-2deg); transform-origin: left center; }
+  .act {
+    grid-column: 1 / -1; grid-row: 4; margin-top: 28px;
+    display: flex; align-items: center; gap: 22px;
+    width: fit-content; max-width: 100%; padding: 9px 20px 9px 9px;
+  }
+  .act .prompt { flex: none; }
+  .prompt code { white-space: nowrap; }
+  .act .note { margin: 0; max-width: 66ch; }
+  .act .note { font-size: 13.5px; color: var(--fg); }
+}
+
+/* The prompt and its note sit on a pool of the theme's ground with soft,
+   blurred edges, not a box. */
+.act { position: relative; isolation: isolate; }
+.act::before { content: ""; position: absolute; inset: -12px -26px; z-index: -1; pointer-events: none; background: var(--veil); filter: blur(14px); border-radius: 30px; }
+
+/* The sweep: a fine line along the wipe's edge, so it reads as one pass. */
+.sweep {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 1px; z-index: 3; pointer-events: none; opacity: 0;
+  background: color-mix(in oklab, var(--accent) 70%, white);
+  box-shadow: 0 0 8px 1px color-mix(in oklab, var(--accent) 35%, transparent);
+}
+.mk { position: absolute; width: 0; height: 0; }
+.mk[data-k="tl"] { left: 0; top: 0; } .mk[data-k="tr"] { right: 0; top: 0; }
+.mk[data-k="bl"] { left: 0; bottom: 0; } .mk[data-k="br"] { right: 0; bottom: 0; }
+
+/* ---------- the pitches: one window, two short sections ----------
+   It starts on clear wallpaper, well below the hero's veil. */
+.pitches { width: min(100% - 2 * var(--out), 52rem); margin: clamp(56px, 11vh, 120px) auto 0; padding: clamp(24px, 4vw, 44px) clamp(20px, 4.4vw, 52px); }
+.pitches h2 { font-weight: 800; font-size: 19px; letter-spacing: -0.01em; color: var(--strong); margin: 0 0 6px; }
+.pitches p { margin: 0; max-width: 62ch; }
+.how { border-top: 1px solid var(--border); margin-top: clamp(28px, 4vw, 40px); padding-top: clamp(24px, 3.4vw, 34px); }
+
+/* ---------- keyboard first: pneu's list and key bar, drawn ----------
+   Tones and sizes are pneu's app.css: --muted, --border, --unread and --bar
+   derived from the theme's two ends, the row grid, the cursor's rail, the
+   key bar's hints and their 360ms step aside. */
+.kdemo {
+  --muted: color-mix(in oklab, var(--fg) 75%, var(--bg));
+  --border: color-mix(in oklab, var(--fg) 12%, var(--bg));
+  --unread: light-dark(color-mix(in oklab, var(--fg) 60%, black), color-mix(in oklab, var(--fg) 60%, white));
+  --bar: light-dark(oklch(from var(--bg) calc(l - 0.07) c h), oklch(from var(--bg) calc(l - 0.10) c h));
+  --rh: 28px;
+  position: relative;
+  margin-top: 20px;
+  font: 13px/19px "JB", ui-monospace, monospace;
+}
+.kwin { position: relative; border: 1px solid var(--border); background: var(--bg); overflow: hidden; }
+.krows { list-style: none; margin: 0; padding: 0; position: relative; isolation: isolate; height: calc(7 * var(--rh)); overflow: hidden; }
+.krows .cursor { position: absolute; left: 0; right: 0; top: 0; height: var(--rh); z-index: -1; background: var(--selection); border-left: 3px solid var(--accent); }
+.row {
+  display: grid; grid-template-columns: 19ch minmax(0, 1fr) auto 8.5ch; gap: 2ch;
+  padding: 4px 1ch; border-left: 3px solid transparent; border-bottom: 1px solid var(--border);
+  white-space: nowrap; height: var(--rh); overflow: hidden;
+}
+.row > span { overflow: hidden; text-overflow: ellipsis; }
+.row .authors { color: var(--fg); }
+.row .subject { color: var(--fg); }
+.row .date { grid-column: 4; color: var(--muted); text-align: right; }
+.row.unread .authors, .row.unread .subject { color: var(--unread); font-weight: bold; }
+.row.flagged .subject::before { content: "★ "; color: var(--accent); }
+.row .count { align-self: center; padding: 0 0.6ch; font-size: 12px; line-height: 1.3; color: var(--muted); border: 1px solid var(--border); border-radius: 3px; }
+.row.unread .count { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.row.attach .date::before {
+  content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-right: 0.6ch; vertical-align: -0.1em; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.5 7.5 8 13a3.5 3.5 0 0 1-5-5l6-6a2.3 2.3 0 0 1 3.3 3.3l-6 6a1.2 1.2 0 0 1-1.7-1.7L10 4.2'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.5 7.5 8 13a3.5 3.5 0 0 1-5-5l6-6a2.3 2.3 0 0 1 3.3 3.3l-6 6a1.2 1.2 0 0 1-1.7-1.7L10 4.2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.kbar {
+  display: flex; align-items: center; gap: 2ch; height: 28px; padding: 0 1ch;
+  font-size: 12px; color: var(--muted); background: var(--bar); border-top: 1px solid var(--border);
+}
+.kbar .keys { flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; white-space: nowrap; }
+.kbar .h { display: inline-block; max-width: 22ch; margin-right: 2ch; overflow: hidden; white-space: nowrap; vertical-align: bottom; }
+.kbar .h.flash kbd { color: var(--unread); }
+.kbar .h kbd { font: inherit; margin-right: 0.6ch; color: color-mix(in oklab, var(--accent) 85%, var(--fg)); }
+.kbar .h.learned { max-width: 0; margin-right: 0; opacity: 0; }
+.kbar .status { flex: 0 1 auto; min-width: 0; max-width: 0; white-space: nowrap; overflow: hidden; color: var(--fg); opacity: 0; }
+.kbar .status.show { opacity: 1; max-width: 40ch; }
+.kbar .undo { margin-left: 1ch; padding: 0 0.8ch; color: var(--accent); border: 1px solid var(--accent); border-radius: 2px; }
+.press { position: absolute; right: 0; bottom: calc(100% + 8px); pointer-events: none; }
+.press .cap {
+  display: block; font: 700 15px/1 "JB", monospace; color: var(--accent); min-width: 2.2em; text-align: center;
+  padding: 7px 9px 6px; border: 1px solid color-mix(in oklab, var(--fg) 30%, var(--bg)); border-bottom-width: 3px; background: var(--bar);
+  box-shadow: 0 6px 16px -6px rgba(0,0,0,.45);
+  opacity: 0;
+}
+
+/* ---------- the close ---------- */
+.ready { position: relative; isolation: isolate; width: min(100% - 2 * var(--out), 52rem); margin: 0 auto; padding: clamp(80px, 14vh, 150px) 0 clamp(60px, 10vh, 110px); }
+.ready::before {
+  content: ""; position: absolute; inset: 0 -12%; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--bg) 88%, transparent), color-mix(in oklab, var(--bg) 55%, transparent) 70%, transparent);
+}
+.ready h2 { font-size: clamp(28px, 3.2vw, 46px); line-height: 1.08; letter-spacing: -0.04em; font-weight: 800; color: var(--strong); margin: 0 0 22px; }
+.ready .prompt { width: fit-content; max-width: 100%; }
+.ready .note { font-size: 14px; color: var(--fg); max-width: 64ch; margin-top: 16px; text-wrap: pretty; }
+@media (min-width: 700px) { .ready .prompt code { white-space: nowrap; } }
+
+/* ---------- histoire ---------- */
+.histoire { display: grid; place-items: center; padding: 10px var(--out) clamp(60px, 9vh, 100px); }
+.card {
+  width: min(100%, 27rem); padding: 20px 26px 22px; transform: rotate(-1.6deg);
+  background: url(img/mottle.webp) 0 0 / 1100px, #e2d3ab; color: #221c1d;
+  font: 16px/1.6 Georgia, "Iowan Old Style", serif;
+  box-shadow: 0 1px 1px rgba(0,0,0,.25), 0 18px 40px -12px rgba(0,0,0,.55);
+}
+.card.paper { background: url(img/paper.webp) 0 0 / 420px, url(img/mottle.webp) 0 0 / 1100px, #e2d3ab; }
+.card .stamp { display: block; width: 62%; height: auto; margin: -4px 0 6px -14px; mix-blend-mode: multiply; }
+.card p { margin: 0; }
+
+/* A key as a keycap, as in the keyboard demo. */
+.key {
+  display: inline-block; font: 700 .86em/1 "JB", monospace; color: var(--strong);
+  padding: 3px 6px 2px; border: 1px solid color-mix(in oklab, var(--fg) 30%, var(--bg)); border-bottom-width: 3px;
+  background: color-mix(in oklab, var(--bg) 80%, var(--fg)); vertical-align: 1px;
+}
+
+.foot { width: min(100% - 2 * var(--out), 52rem); margin: 0 auto var(--out); display: flex; justify-content: center; }
+.foot nav { padding: 8px 18px; font-size: 13px; color: var(--muted); }
+
+/* ---------- narrow: words, the picture, then the prompt ---------- */
+@media (max-width: 980px) {
+  .ground { grid-template-columns: minmax(0, 1fr); row-gap: 26px; align-content: start; padding-top: calc(var(--out) + 14px); min-height: 0; }
+  .ground::before { background: linear-gradient(180deg, color-mix(in oklab, var(--bg) 88%, transparent) 0, color-mix(in oklab, var(--bg) 50%, transparent) 30%, transparent 55%); }
+  .sub { max-width: 40ch; }
+  .act { padding-bottom: 20px; }
+  .act .note { margin-top: 10px; max-width: none; font-size: 13.5px; color: var(--fg); }
+  .print { transform: rotate(-1.4deg); }
+  .cap { transform: rotate(-1.4deg); transform-origin: left center; }
+}
+@media (max-width: 560px) {
+  :root { --out: 14px; --barh: 28px; }
+  body { font-size: 14px; }
+  .bar { padding: 0 8px; font-size: 11.5px; grid-template-columns: 1fr auto; }
+  .bar-c { display: none; }
+  .bar-r { gap: 11px; }
+  .bar-r .ico:nth-of-type(-n+2) { display: none; }
+  .logo { margin-right: 6px; }
+  .tip { right: 0; }
+  .name svg { width: 76px; margin-bottom: 14px; }
+  .sub { font-size: 14.5px; }
+  .ground { row-gap: 18px; padding-top: 22px; }
+  h1 { font-size: 31px; margin-bottom: 12px; }
+  .stack { aspect-ratio: 640 / 560; }
+  .print { padding: 6px; }
+  .cap { margin-top: 10px; }
+  .prompt { padding: 9px 9px 9px 11px; }
+  .prompt code { font-size: 13px; }
+  .copy { align-self: center; padding: 5px 12px; }
+  .cap { width: 100%; }
+  .sh { text-overflow: ellipsis; }
+  .cap { font-size: 11.5px; padding-left: 9px; }
+  .ctl button { padding: 0 5px; }
+  .pitches h2 { font-size: 17px; }
+  .kdemo { font-size: 11.5px; --rh: 26px; line-height: 17px; }
+  .row { grid-template-columns: 10ch minmax(0, 1fr) 0 7.5ch; gap: 1.4ch; }
+  .row .count { display: none; }
+  .kbar { font-size: 11px; }
+  .press { bottom: auto; top: 4px; right: 6px; z-index: 2; }
+  .card { transform: rotate(-1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret { animation: none; }
+}
+
+/* ---------- the reading pages: privacy and terms ----------
+   The same desktop, holding still: one window of text over the wallpaper,
+   the postmark as a signature in its corner. */
+.wall-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.page { width: min(100% - 2 * var(--out), 46rem); margin: clamp(28px, 7vh, 72px) auto var(--out); }
+.legal { padding: clamp(24px, 4vw, 46px) clamp(20px, 4.4vw, 52px) clamp(20px, 3vw, 30px); font-size: 14.5px; line-height: 1.7; }
+.legal h1 { font-size: clamp(26px, 3vw, 34px); margin: 0 0 12px; }
+.legal h2 { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; color: var(--strong); margin: 30px 0 6px; }
+.legal p { margin: 0 0 12px; max-width: 64ch; }
+.legal .lede { font-size: 16px; color: var(--strong); margin-bottom: 8px; }
+.legal ul { margin: 0 0 12px; padding-left: 1.3em; max-width: 64ch; }
+.legal li { margin-bottom: 6px; }
+.legal li::marker { color: var(--accent); }
+.legal code { font: 600 .95em "JB", monospace; color: var(--accent); }
+.sig { float: right; width: clamp(110px, 22vw, 170px); margin: -10px -14px 10px 18px; }
+.sig img { display: block; width: 100%; height: auto; }
+.sig .dk { display: none; }
+:root[data-mode="light"] .sig .lt { mix-blend-mode: multiply; }
+:root[data-mode="dark"] .sig .lt { display: none; }
+:root[data-mode="dark"] .sig .dk { display: block; }
+.links { clear: both; border-top: 1px solid var(--border); margin-top: 26px; padding-top: 14px; font-size: 13px; color: var(--muted); }
+.links a[aria-current="page"] { color: var(--fg); text-decoration: none; }
+@media (max-width: 560px) {
+  .sig { width: 88px; margin: -8px -8px 6px 10px; }
+}

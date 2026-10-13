@@ -15,12 +15,40 @@
 <meta property="og:image:height" content="640">
 <meta property="og:image:alt" content="The pneu postmark stamped in red on manila paper, beside the name pneu in pen">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="dark light">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../fonts/jbmono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../style.css">
+<!-- The theme: the last one seen on the home page, else Tokyo Night (Rose
+     Pine on a light system). Set before the first paint. -->
+<script src="../themes.js"></script>
+<script src="../reading.js"></script>
 </head>
-<body>
-<main>
-<picture><source media="(prefers-color-scheme: dark)" srcset="../stamp-inked-dark.webp"><img class="stamp small" src="../stamp-inked.webp" width="500" height="300" alt="The pneu postmark: a p drawn as a pneumatic tube, ringed by “dans l'heure · within the hour”"></picture>
+<body class="reading">
+
+<div class="wall" aria-hidden="true"><img class="wall-img" alt=""></div>
+
+<header class="bar">
+  <div class="bar-l">
+    <span class="logo" aria-hidden="true">&#xe900;</span>
+    <nav class="ws" aria-label="Home page sections">
+      <a href="../#top">1</a><a href="../#why">2</a><a href="../#ready">3</a><a href="../#histoire">4</a>
+    </nav>
+  </div>
+  <div class="bar-c"><span class="clock">Tuesday 13:42</span></div>
+  <div class="bar-r">
+    <button class="pw" type="button" aria-describedby="pw-tip"><span class="pw-mark" aria-hidden="true">&#xe000;</span><span class="pw-n">7</span><span class="sr"> unread</span></button>
+    <div class="tip" id="pw-tip" role="tooltip">7 unread · Tessa, Sam, Nadia +4</div>
+    <span class="ico" aria-hidden="true">&#xf00af;</span>
+    <span class="ico" aria-hidden="true">&#xf0928;</span>
+    <span class="ico" aria-hidden="true">&#xf057e;</span>
+    <span class="ico" aria-hidden="true">&#xf0079;</span>
+  </div>
+</header>
+
+<main class="page">
+<article class="win legal">
+<span class="sig"><img class="lt" src="../img/stamp-inked-small.webp" width="500" height="300" alt="The pneu postmark: a p drawn as a pneumatic tube, ringed by “dans l'heure · within the hour”"><img class="dk" src="../img/stamp-inked-small-dark.webp" width="500" height="300" alt="" loading="lazy"></span>
 <h1>Terms of service</h1>
 <p class="lede">pneu is free software that you run yourself. There is no
 service to agree to.</p>
@@ -36,7 +64,9 @@ controlled by the person who installed it.</p>
 <p>How pneu handles your data is described in the <a href="../privacy/">privacy
 policy</a>.</p>
 
-<nav><a href="../">pneu</a><a href="../privacy/">Privacy</a></nav>
+<nav class="links"><a href="../">pneu</a> · <a href="../privacy/">Privacy</a> · <a href="../terms/" aria-current="page">Terms</a></nav>
+</article>
 </main>
+
 </body>
 </html>
