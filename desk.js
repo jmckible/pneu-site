@@ -359,10 +359,10 @@
     if (key === "j" || key === "k") learn("jk", instant);
   }
   function archive(instant) {
-    press("e", "e", instant);
+    press("a", "a", instant);
     const r = rows()[at];
     status.classList.add("show");
-    learn("e", instant);
+    learn("a", instant);
     if (instant) { r.remove(); return; }
     const h = r.offsetHeight, pt = parseFloat(getComputedStyle(r).paddingTop);
     r.classList.add("leaving");
