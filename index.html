@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pneu</title>
+<meta name="description" content="A Gmail-native mail client for Omarchy that runs entirely on your own computer.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="pneu">
+<meta property="og:title" content="pneu">
+<meta property="og:description" content="A Gmail-native mail client for Omarchy that runs entirely on your own computer.">
+<meta property="og:url" content="https://pneu.mckible.com/">
+<meta property="og:image" content="https://pneu.mckible.com/social.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="The pneu postmark stamped in red on manila paper, beside the name pneu in pen">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<picture><source media="(prefers-color-scheme: dark)" srcset="stamp-inked-dark.webp"><img class="stamp" src="stamp-inked.webp" width="500" height="300" alt="The pneu postmark: a p drawn as a pneumatic tube, ringed by “dans l'heure · within the hour”"></picture>
+<h1 class="name"><picture><source media="(prefers-color-scheme: dark)" srcset="wordmark-paper.svg"><img src="wordmark-ink.svg" alt="pneu"></picture></h1>
+<p class="lede">A Gmail-native mail client for Omarchy.</p>
+
+<p>Named for the Paris <em>pneumatique</em> (1866–1984), where a letter went
+by tube under the city and arrived within the hour; Parisians called the
+letter itself <em>un pneu</em>.</p>
+
+<p>Gmail stays the backend. pneu is a local view over a synced copy:
+<a href="https://github.com/gauteh/lieer">lieer</a> syncs each account through
+the Gmail API, <a href="https://notmuchmail.org/">notmuch</a> indexes it, and a
+small server on your own computer renders it in an app window of your
+browser. An Omarchy bar widget shows unread mail and warns when sync stops.</p>
+
+<h2>If you arrived from a Google consent screen</h2>
+
+<p>pneu has no central service. Everyone who installs it creates their own
+Google Cloud project and OAuth client, so the app named on your consent screen
+belongs to whoever set it up, usually you. Its access goes from Google to that
+person's computer and nowhere else. See the <a href="privacy/">privacy
+policy</a>.</p>
+
+<nav><a href="privacy/">Privacy</a><a href="terms/">Terms</a></nav>
+</main>
+</body>
+</html>

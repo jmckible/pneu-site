@@ -1,0 +1,27 @@
+<!doctype html>
+<!-- The link-preview card, social.jpg (1280 × 640): og:image for these pages
+     and the GitHub repo's social preview. Regenerate with
+     chromium --headless --force-device-scale-factor=2 --window-size=1280,640 \
+       --screenshot=social@2x.png social.html
+     then magick social@2x.png -resize 1280x640 -quality 88 social.jpg
+     (GitHub caps a social preview at 1MB; the PNG is over). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pneu social card</title>
+<style>
+  html, body { margin: 0; width: 1280px; height: 640px; overflow: hidden; }
+  body {
+    display: flex; align-items: center; gap: 110px; padding: 0 90px; justify-content: center; box-sizing: border-box;
+    background: url(tex/paper.webp) 0 0 / 420px, url(tex/mottle.webp) 0 0 / 1100px, #e2d3ab;
+    color: #221c1d;
+  }
+  .stamp { width: 450px; height: auto; mix-blend-mode: multiply; flex: none; margin-left: -20px; }
+  .name { display: block; width: 380px; height: auto; }
+</style>
+</head>
+<body>
+<img class="stamp" src="stamp-inked.webp" alt="">
+<img class="name" src="wordmark-ink.svg" alt="pneu">
+</body>
+</html>

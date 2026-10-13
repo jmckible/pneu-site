@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pneu privacy</title>
+<meta name="description" content="pneu keeps your Gmail on your own computer and sends it nowhere else.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="pneu">
+<meta property="og:title" content="pneu privacy">
+<meta property="og:description" content="pneu keeps your Gmail on your own computer and sends it nowhere else.">
+<meta property="og:url" content="https://pneu.mckible.com/privacy/">
+<meta property="og:image" content="https://pneu.mckible.com/social.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="The pneu postmark stamped in red on manila paper, beside the name pneu in pen">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main>
+<picture><source media="(prefers-color-scheme: dark)" srcset="../stamp-sous-la-ville-inked-dark.webp"><img class="stamp small" src="../stamp-sous-la-ville-inked.webp" width="500" height="300" alt="The pneu postmark, ringed by “sous la ville · under the city”"></picture>
+<h1>Privacy policy</h1>
+<p class="lede">pneu keeps your mail on your own computer. Nobody else,
+including pneu's author, receives any of it.</p>
+
+<h2>Who operates the app</h2>
+<p>pneu is software you install and run yourself. Each installation uses a
+Google OAuth client created by the person installing it, in their own Google
+Cloud project. There is no pneu server, account or service, and the author of
+pneu has no access to any installation or its data.</p>
+
+<h2>What it accesses</h2>
+<p>With your consent, pneu's sync component (lieer) uses the Gmail API with
+these scopes:</p>
+<ul>
+<li><code>gmail.readonly</code>, to download your messages;</li>
+<li><code>gmail.labels</code>, to read and manage your labels;</li>
+<li><code>gmail.modify</code>, to apply the changes you make, such as
+archiving, starring and marking read, and to send mail you write.</li>
+</ul>
+
+<h2>Where your data goes</h2>
+<ul>
+<li>Messages are stored on your computer, in your home directory, and indexed
+there by notmuch.</li>
+<li>The OAuth token is stored on your computer, readable only by your user
+account.</li>
+<li>pneu's own server listens only on your computer's loopback interface and
+makes no connections to the internet. The only network traffic is between
+lieer and Google's Gmail API.</li>
+<li>Nothing is sent to pneu's author or to any third party. There is no
+analytics, telemetry, advertising or crash reporting.</li>
+</ul>
+
+<h2>Limited Use</h2>
+<p>pneu's use and transfer of information received from Google APIs adheres to
+the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google
+API Services User Data Policy</a>, including the Limited Use requirements. Data
+from Gmail is used only to show you your own mail and carry out the actions you
+take, and is not transferred to anyone.</p>
+
+<h2>Removing access and data</h2>
+<p>Revoke access at any time in your
+<a href="https://myaccount.google.com/connections">Google account's third-party
+connections</a>. Uninstalling pneu (the Uninstall section of its install
+guide) deletes the downloaded mail, the index and the token from your
+computer.</p>
+
+<h2>Changes</h2>
+<p>This policy changes only with pneu's source, and the current version is always
+at this address. Last updated 26 September 2026.</p>
+
+<nav><a href="../">pneu</a><a href="../terms/">Terms</a></nav>
+</main>
+</body>
+</html>

@@ -1,0 +1,27 @@
+/* pneu's colours (brand/README.md in the pneu repo): the page is paper with
+   ink on it, and the stamp is the red. In the dark the paper becomes ink and
+   links take the petit bleu, since red reads poorly on ink. */
+:root { color-scheme: light dark; --bg: #e2d3ab; --fg: #221c1d; --muted: #4f4636; --rule: #c9b98f; --accent: #a8261f; }
+@media (prefers-color-scheme: dark) { :root { --bg: #2f2c2a; --fg: #e2d3ab; --muted: #b3a785; --rule: #43393a; --accent: #86aecb; } }
+* { box-sizing: border-box; }
+/* The ground is the omakase kit's paper: two translucent tiles over the
+   colour, so the same grain works on the dark ground. */
+body { margin: 0; background: url(tex/paper.webp) 0 0 / 420px, url(tex/mottle.webp) 0 0 / 1100px, var(--bg); color: var(--fg); font: 17px/1.6 Georgia, "Iowan Old Style", serif; }
+main { max-width: 38rem; margin: 0 auto; padding: 3rem 1rem 4rem; }
+.stamp { display: block; width: 15rem; max-width: 70%; height: auto; margin: 0 0 2.5rem -0.5rem; }
+.stamp.small { width: 10rem; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .25rem; }
+h1.name { margin-bottom: .75rem; }
+/* Only the postmark is printed: the inked stamp (baked, never a live filter)
+   is multiplied into the paper so its fibres show through. On the dark ground
+   the lighter-inked dark cut sits on top. Type stays crisp. */
+.stamp { mix-blend-mode: multiply; }
+@media (prefers-color-scheme: dark) { .stamp { mix-blend-mode: normal; } }
+h1.name img { display: block; width: 11rem; height: auto; }
+h2 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+p, li { margin: 0 0 .75rem; }
+.lede { color: var(--muted); margin-bottom: 2rem; }
+a { color: var(--accent); }
+code { font: .9em ui-monospace, "SF Mono", Menlo, monospace; }
+nav { font-size: .9rem; border-top: 1px solid var(--rule); margin-top: 3rem; padding-top: 1rem; color: var(--muted); }
+nav a { margin-right: 1rem; }
