@@ -175,13 +175,10 @@ h1 {
   .cap { margin-left: 3%; transform: rotate(-2deg); transform-origin: left center; }
   .act {
     grid-column: 1 / -1; grid-row: 4; margin-top: 28px;
-    display: flex; align-items: center; gap: 22px;
     width: fit-content; max-width: 100%; padding: 9px 20px 9px 9px;
   }
-  .act .prompt { flex: none; }
   .prompt code { white-space: nowrap; }
-  .act .note { margin: 0; max-width: 66ch; }
-  .act .note { font-size: 13.5px; color: var(--fg); }
+  .act .note { margin: 12px 0 0 2px; max-width: 66ch; font-size: 13.5px; color: var(--fg); }
 }
 
 /* The prompt and its note sit on a pool of the theme's ground with soft,
